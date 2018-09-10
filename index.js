@@ -15,11 +15,19 @@ let transform = args[4];
 let message = `Using ${transform} on ${inputFile} and saving to ${outputFile}.`;
 console.log(message);
 
+
+const Event = require('events').EventEmitter;
+const ee = new Event();
+
 const BMT = require('./lib/bitmap.js');
 let bmt = new BMT();
 
-bmt.open(inputFile, (err, data) => {
+bmt.open(inputFile, (err, bitmap) => {
     if (err) throw err;
 
-    console.log(data);
+    ee.emit('fileLoaded', bitmap);
+});
+
+ee.on('fileLoaded', (bitmap) => {
+    console.log(bitmap);
 });
